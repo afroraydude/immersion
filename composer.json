@@ -1,0 +1,27 @@
+{
+    "name": "afroraydude/immersion",
+    "description": "Study guide plugin for Nozomi",
+    "type": "library",
+    "license": "Apache-2.0",
+    "authors": [
+        {
+            "name": "Ray Thomas",
+            "email": "thomasray0@gmail.com"
+        }
+    ],
+    "repositories": [
+        {
+            "type": "vcs",
+            "url": "https://github.com/afroraydude/nozomi-core"
+        }
+    ],
+    "require": {
+        "php": ">=7.1.0",
+        "afroraydude/nozomi-core": "dev-master"
+    },
+    "autoload": {
+        "psr-4": {
+            "Nozomi\\Plugin\\Immersion\\": "./"
+        }
+    }
+}

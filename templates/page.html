@@ -4,7 +4,9 @@
 </head>
 <body>
 <div class="page">
+{% include 'pagenav.html' %}
 <div class="container">
+    <h1 class="pageTitle">{{ title }}</h1>
     {{ content|raw }}
 </div>
 </div>

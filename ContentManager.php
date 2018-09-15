@@ -32,6 +32,7 @@ class ContentManager {
     $notfound = $stmt->fetch();
 
     if($x) {
+      $x['guide'] = $guideRow['guide_title'];
       return $app->immersionRenderer->render($rs, 'page.html', $x);
     } else {
       $templateDir = 'themes/'.$config['theme'];

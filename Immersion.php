@@ -36,31 +36,36 @@ class Immersion extends NozomiPlugin {
       if (isset($config['immersionEnabled'])) {
         return $this->immersionRenderer->render($response, 'home.html');
       } else {
-        $s = $config['sqlhost'];
-        $d = $config['sqldb'];
-        $u = $config['sqluser'];
-        $p = $config['sqlpass'];
-        $conn = new Database("mysql:host=$s;dbname=$d", $u, $p);
-        // set the PDO error mode to exception
-        $conn->setAttribute(Database::ATTR_ERRMODE, Database::ERRMODE_EXCEPTION);
-        $sql = "CREATE TABLE IF NOT EXISTS `immersion_guides`(`id` int(10) NOT NULL auto_increment, `guide_title` varchar(255), `guide_table` varchar(255), `guide_uri` varchar(255), PRIMARY KEY(`id`) );";
-        $conn->exec($sql);
-        $sql = "CREATE TABLE `immersion_ex`( `id` INT(10) NOT NULL AUTO_INCREMENT, `name` VARCHAR(260) NOT NULL, `title` VARCHAR(32) NOT NULL, `author` VARCHAR(50) NOT NULL, `content` TEXT NOT NULL, `template` VARCHAR(50) NOT NULL DEFAULT 'default.html', `last-modified` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP, PRIMARY KEY (`id`), UNIQUE INDEX `name` (`name`)) COLLATE='utf8_general_ci' ENGINE=InnoDB;";
-        $conn->exec($sql);
-        $sql = "INSERT INTO `immersion_ex` (`name`, `title`, `author`, `content`) VALUES ('index', 'Home', 'nozomi', '<h1>Welcome to the Immersion plugin!</h1>');";
-        $conn->exec($sql);
-        $sql = "INSERT INTO `immersion_guides` (`id`, `guide_title`, `guide_table`, `guide_uri`) VALUES (NULL, 'Example Guide', 'immersion_ex', 'example');";
-        $conn->exec($sql);
+        $admin = new Admin();
+        $admin->Setup($config);
         $config['immersionEnabled'] = 'true';
         $configClass->WriteToConfig($config);
       }
     });
     
+    $this->app->get('/immersion/assets/{name:.*}', function (Request $request, Response $response, array $args) {
+      $path = $args['name'];
+      $containingFolder = __DIR__ . '/';
+      $filepath = $containingFolder . $path;
+      $file = @file_get_contents($filepath);
+      if ($file) {
+        $finfo = new \Finfo(FILEINFO_MIME_TYPE);
+        $response->write($file);
+        $explosion = explode('.', $filepath);
+        $ext = array_pop($explosion);
+        if ($ext === 'svg') return $response->withHeader('Content-Type', 'image/svg+xml');
+        //if ($ext === 'svg') return $response;
+        else return $response->withHeader('Content-Type', $finfo->buffer($file));
+      } else {
+        $content = new Content();
+        return $content->RenderPage($response, $this, '404');
+      }
+    });
+    
     $this->app->group('/immersion/{guide}', function() {
       $this->get('', function ($request, $response, $args) {
-        $args['page'] = 'index';
         $mgr = new ContentManager();
-        return $mgr->GetPage($this, $response, $args['guide'], $args['page']);
+        return $mgr->GetPage($this, $response, $args['guide'], 'index');
       });
       $this->get('/{page:.*}', function ($request, $response, $args) {
         $mgr = new ContentManager();

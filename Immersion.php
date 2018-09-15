@@ -34,7 +34,7 @@ class Immersion extends NozomiPlugin {
       $configClass = new \Nozomi\Core\Configuration();
       $config = $configClass->GetConfig();
       if (isset($config['immersionEnabled'])) {
-        return $response->getBody()->write("Immersion setup complete");
+        return $this->immersionRenderer->render($response, 'home.html');
       } else {
         $s = $config['sqlhost'];
         $d = $config['sqldb'];

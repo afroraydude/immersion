@@ -32,15 +32,12 @@ class ContentManager {
     $notfound = $stmt->fetch();
 
     if($x) {
-      $templateDir = 'themes/'.$config['theme'];
-      $template = $templateDir.'/'.$x['template'];
-
-      return $app->siteRenderer->render($rs, $template, $x);
+      return $app->immersionRenderer->render($rs, 'page.html', $x);
     } else {
       $templateDir = 'themes/'.$config['theme'];
       $template = $templateDir.'/'.$notfound['template'];
 
-      if ($notfound) return $app->siteRenderer->render($rs, $template, $notfound);
+      if ($notfound) return $app->immersionRenderer->render($rs, $template, $notfound);
       else return $app->nozomiRenderer->render($rs, '404.html');
     }
   }

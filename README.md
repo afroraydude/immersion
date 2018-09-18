@@ -1,4 +1,4 @@
-# immersiom
+# immersion
 
 ## What is Immersion?
 Immersion is a plugin for [Nozomi](https://github.com/afroraydude/nozomi-core) for creation of study guides and educational mini-sites within a Nozomi install.
